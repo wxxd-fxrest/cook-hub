@@ -7,9 +7,11 @@ import { MaterialIcons } from '@expo/vector-icons';
 import Loading from '../helpers/Loading';
 import * as WebBrowser from "expo-web-browser";
 import { AntDesign } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecipeDetailScreen = ({ route: {params} }) => {
-    const [isFavourite, setIsFavourite] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
     const navigation = useNavigation();
     const [meal, setMeal] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -21,12 +23,41 @@ const RecipeDetailScreen = ({ route: {params} }) => {
 
     useEffect(() => {
         getMealData(params.idMeal);
+        loadLikeStatus();
     }, []);
+
+    const loadLikeStatus = async () => {
+        try {
+            // AsyncStorage에서 해당 게시글의 좋아요 상태를 불러옵니다.
+            const likedStatus = await AsyncStorage.getItem(`likedStatus_${params.idMeal}`);
+            if (likedStatus !== null) {
+              // 좋아요 상태가 저장되어 있으면 해당 상태를 설정합니다.
+              setIsLiked(likedStatus === 'true');
+            }
+        } catch (error) {
+            console.error('Error loading like status:', error);
+        }
+    };
+    
+    const toggleLike = async () => {
+        try {
+            // 현재 좋아요 상태를 반전시킵니다.
+            const newLikeStatus = !isLiked;
+            setIsLiked(newLikeStatus);
+        
+            // likedStatus 객체를 JSON 문자열로 변환하여 저장합니다.
+            await AsyncStorage.setItem(`likedStatus_${params.idMeal}`, newLikeStatus.toString());
+            
+            // console.log(`Like status updated for post ${params.idMeal}:`, newLikeStatus);
+        } catch (error) {
+            console.error('Error toggling like status:', error);
+        }
+    };
 
     const getMealData = async(id) => {
         try {
             const response = await axios.get(`https://themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
-            console.log('response=>', response.data)
+            // console.log('response=>', response.data)
             if (response && response.data) {
                 setMeal(response.data.meals[0]);
                 setLoading(false);
@@ -62,6 +93,14 @@ const RecipeDetailScreen = ({ route: {params} }) => {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{paddingBottom: 20}}
                 >
+                    <HeaderContainer>
+                        <BackBtn onPress={() => navigation.goBack()}>
+                            <AntDesign name="left" size={28} color="rgba(255, 0, 0, 0.8)" />
+                        </BackBtn>
+                        <HeartBtn onPress={toggleLike}>
+                            {isLiked === true ? <MaterialCommunityIcons name="cards-heart" size={28} color="rgba(255, 0, 0, 0.8)" /> : <MaterialCommunityIcons name="cards-heart-outline" size={28} color="rgba(255, 0, 0, 0.8)"/>}
+                        </HeartBtn>
+                    </HeaderContainer>
                     <RecipeImage source={{ uri: meal.strMealThumb }} />
                     <DetailContainer>
                         <Title>{meal.strMeal.length > 20 ? `${meal.strMeal.slice(0, 20)}...` : meal.strMeal}</Title>
@@ -111,6 +150,35 @@ const Container = styled.View`
 `;
 
 const ScrollBox = styled.ScrollView``;
+
+const HeaderContainer = styled.View`
+    position: absolute;
+    top: ${hp(5.5)}px;
+    padding: 0px ${hp(1.5)}px;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    flex-direction: row;
+    justify-content: space-between;
+`;
+
+const BackBtn = styled.TouchableOpacity`
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+`;
+
+const HeartBtn = styled.TouchableOpacity`
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+`;
 
 const RecipeImage = styled.Image`
     width: 100%;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, LayoutAnimation } from "react-native";
+import { Alert, LayoutAnimation, TouchableOpacity } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import styled from "styled-components";
 import {MagnifyingGlassIcon} from 'react-native-heroicons/outline'
@@ -8,8 +8,10 @@ import axios from 'axios';
 import Recipes from "../components/Recipes";
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { CachedImage } from "../helpers/image";
+import { useNavigation } from "@react-navigation/native";
 
 const HomeScreen = () => {
+    const navigation = useNavigation();
     const [marginRight, setMarginRight] = useState(hp(0));
     const [isModalVisible, setModalVisible] = useState(false);
     const [categories, setCategories] = useState([]);
@@ -96,7 +98,9 @@ const HomeScreen = () => {
                         </SearchBackBtn>} 
                         </> : <>
                         {!isModalVisible && <>
-                            <Title> Cook Hub </Title>
+                            <TouchableOpacity onPress={() => navigation.navigate('Like')}>
+                                <Title> Cook Hub </Title>
+                            </TouchableOpacity>
                     </>}
                 </>}
                 <SearchContainer>
@@ -155,7 +159,7 @@ const HomeScreen = () => {
 const Container = styled.View`
     flex: 1;
     background-color: #ffbb4f;
-    padding: 50px ${hp(3)}px;
+    padding: 50px ${hp(3)}px 0px ${hp(3)}px;
 `;
 
 const Box = styled.View`
