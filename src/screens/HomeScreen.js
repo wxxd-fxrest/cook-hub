@@ -9,13 +9,13 @@ import Recipes from "../components/Recipes";
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { CachedImage } from "../helpers/image";
 import { useNavigation } from "@react-navigation/native";
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
 const HomeScreen = () => {
     const navigation = useNavigation();
     const [marginRight, setMarginRight] = useState(hp(0));
     const [isModalVisible, setModalVisible] = useState(false);
     const [categories, setCategories] = useState([]);
-    const [activeCategory, setActiveCategory] = useState('Beef');
     const [meals, setMeals] = useState([]);
     const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
     const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태 추가
@@ -56,7 +56,6 @@ const HomeScreen = () => {
 
     const handleChangeCategory = category => {
         getRecipes(category);
-        setActiveCategory(category);
         setMeals([]);
     };
 
@@ -98,9 +97,10 @@ const HomeScreen = () => {
                         </SearchBackBtn>} 
                         </> : <>
                         {!isModalVisible && <>
-                            <TouchableOpacity onPress={() => navigation.navigate('Like')}>
-                                <Title> Cook Hub </Title>
-                            </TouchableOpacity>
+                            <HeartContainer onPress={() => navigation.navigate('Like')}>
+                                <MaterialCommunityIcons name="tag-heart-outline" size={25} color="rgba(255, 0, 0, 0.8)" />
+                                <Title> Keep Hub </Title>
+                            </HeartContainer>
                     </>}
                 </>}
                 <SearchContainer>
@@ -109,7 +109,7 @@ const HomeScreen = () => {
                             placeholder='Search any recipe'
                             placeholderTextColor='white'
                             value={searchQuery}
-                            onChangeText={(text) => setSearchQuery(text)} // 검색어 업데이트
+                            onChangeText={(text) => setSearchQuery(text)} 
                         />
                     }
                     <IconWrapper onPress={onVisible} style={{ marginRight }}>
@@ -119,10 +119,12 @@ const HomeScreen = () => {
             </Box>
 
             {searchResults.length > 0 ? (
-                <SearchResultsContainer>
+                <SearchResultsContainer 
+                    showsVerticalScrollIndicator={false}
+                >
                     {searchResults.map((result, index) => (
                         <SearchResultItem key={index}>
-                            <SearchDetailBtn onPress={() => navigateToRecipeDetail(result)}>
+                            <SearchDetailBtn onPress={() => navigation.navigate('RecipeDetail', { ...result })}>
                                 <CategoriesImgBox>
                                     <CachedImage uri={result.strMealThumb} 
                                         style={{ 
@@ -140,7 +142,7 @@ const HomeScreen = () => {
             ) : (
                 <BodyContainer>
                     <SelectCatagoris>
-                        {categories.length > 0 && <Categories categories={categories} activeCategory={activeCategory} handleChangeCategory={handleChangeCategory}/> }
+                        {categories.length > 0 && <Categories categories={categories} handleChangeCategory={handleChangeCategory}/> }
                     </SelectCatagoris>
 
                     <SelectRecipe 
@@ -158,7 +160,7 @@ const HomeScreen = () => {
 
 const Container = styled.View`
     flex: 1;
-    background-color: #ffbb4f;
+    background-color: #f2c098;
     padding: 50px ${hp(3)}px 0px ${hp(3)}px;
 `;
 
@@ -168,9 +170,18 @@ const Box = styled.View`
     justify-content: space-between;
 `;
 
+const HeartContainer = styled.TouchableOpacity`
+    flex-direction: row;
+    align-items: center;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 13px;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+`;
+
 const Title = styled.Text`
-    color: rgba(255, 0, 0, 0.6);
-    font-size: 30px;
+    color: rgba(255, 0, 0, 0.7);
+    font-size: 18px;
     font-weight: bold;
 `;
 
@@ -189,7 +200,7 @@ const SearchInput = styled.TextInput`
     margin: ${hp(1.5)}px 0px;
     padding-left: ${hp(2)}px;
     letter-spacing: ${hp(0.15)}px;
-    color: gray;
+    color: white;
 `;
 
 const IconWrapper = styled.TouchableOpacity`
@@ -209,10 +220,12 @@ const SelectRecipe = styled.ScrollView``;
 
 const SearchResultsContainer = styled.ScrollView`
     margin-top: ${hp(2)}px;
+    padding: 0px 5px;
 `;
 
 const SearchResultItem = styled.View`
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 3px 2px 2px rgba(0, 0, 0, 0.3);
     border-radius: ${hp(1)}px;
     padding: ${hp(2)}px ${hp(2)}px;
     margin-bottom: ${hp(1)}px;
@@ -226,11 +239,11 @@ const SearchDetailBtn = styled.TouchableOpacity`
 `;
 
 const SearchEmpty = styled.View`
-    width: 30px;
+    width: 25px;
 `;
 
 const SearchResultText = styled.Text`
-    color: white;
+    color: #626160;
     font-size: ${hp(2)}px;
     font-weight: bold;
 `;

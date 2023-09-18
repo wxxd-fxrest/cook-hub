@@ -5,7 +5,8 @@ import Like from "../components/Like";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { AntDesign } from '@expo/vector-icons'; 
 import { useNavigation } from "@react-navigation/native";
-
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+                                
 const LikeScreen = () => {
     const navigation = useNavigation();
     const [likeID, setLikeID] = useState([]);
@@ -40,7 +41,10 @@ const LikeScreen = () => {
                 <BackBtn onPress={() => navigation.goBack()}>
                     <AntDesign name="left" size={28} color="rgba(255, 0, 0, 0.8)" />
                 </BackBtn>
-                <Title> LikeScreen </Title>
+                <KeepHub>
+                    <MaterialCommunityIcons name="tag-heart-outline" size={33} color="rgba(255, 0, 0, 0.8)" />
+                    <Title> Keep Hub </Title>
+                </KeepHub>
             </HeaderContainer>
             <LikeScrollBox>
                 {likeID.map((l, i) => (
@@ -53,7 +57,7 @@ const LikeScreen = () => {
 
 const Container = styled.View`
     flex: 1;
-    background-color: #ffbb4f;
+    background-color: #f2c098;
     padding: 50px ${hp(3)}px;
 `;
 
@@ -74,9 +78,14 @@ const BackBtn = styled.TouchableOpacity`
     height: 40px;
 `;
 
+const KeepHub = styled.View`
+    flex-direction: row;
+    align-items: center;
+`;
+
 const Title = styled.Text`
-    color: rgba(255, 0, 0, 0.6);
-    font-size: 30px;
+    color: rgba(255, 0, 0, 0.7);
+    font-size: 28px;
     font-weight: bold;
 `;
 

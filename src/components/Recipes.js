@@ -10,7 +10,6 @@ import Loading from '../helpers/Loading';
 const Recipes = ({categories, meals}) => {
     const navigation = useNavigation();
 
-    // console.log('meals => ', meals)
     return (
         <Container>
             <Title>Recipes</Title>
@@ -45,8 +44,9 @@ const Container = styled.View`
 const Title = styled.Text`
     font-size: 24px;
     font-weight: bold;
-    color: gray;
+    color: #C43621;
     margin-bottom: 24px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const LoadingContainer = styled.View`
@@ -87,7 +87,7 @@ const RecipeImage = styled.Image`
 const RecipeTitle = styled.Text`
     font-size: 12px;
     font-weight: bold;
-    color: gray;
+    color: #626160;
     margin-left: 8px;
     padding-top: 5px;
     padding-bottom: 13px;

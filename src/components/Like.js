@@ -8,7 +8,6 @@ import { useNavigation } from "@react-navigation/native";
 const Like = ({likeID}) => {
     const [loading, setLoading] = useState(true);
     const [meal, setMeal] = useState([]);
-    // console.log(likeID)
 
     useEffect(() => {
         getMealData();
@@ -47,20 +46,23 @@ const Like = ({likeID}) => {
     )
 };
 
-const Container = styled.View``;
+const Container = styled.View`
+    padding: 0px 5px;
+`;
 
 const LikeContainer = styled.TouchableOpacity`
-    background-color: rgba(255, 255, 255, 0.2);
     flex-direction: row;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 3px 2px 2px rgba(0, 0, 0, 0.3);
+    border-radius: ${hp(1)}px;
+    padding: ${hp(2)}px ${hp(2)}px;
+    margin-bottom: ${hp(1)}px;
     align-items: center;
-    margin: ${hp(1)}px 0px;
-    padding: ${hp(1)}px;
-    border-radius: 5px;
 `;
 
 const RecipeImage = styled.Image`
-    width: ${hp(10)}px;
-    height: ${hp(10)}px;
+    width: ${hp(8)}px;
+    height: ${hp(8)}px;
     border-radius: 20px;
 `;
 

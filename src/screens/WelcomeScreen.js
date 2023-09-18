@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Animated, Easing } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import styled from "styled-components";
-import LogoImg from "../../assets/CookHub-Welcome.png";
+import LogoImg from "../../assets/CookHub-Welcome-removebg-preview.png";
 
 const WelcomeScreen = () => {
     const navigation = useNavigation();
@@ -53,7 +53,7 @@ const WelcomeScreen = () => {
                     style={{
                         backgroundColor: "rgba(255, 0, 0, 0.2)",
                         borderRadius: 1000,
-                        padding: hp(5),
+                        padding: hp(1),
                         transform: [{ scale: circle2Scale }],
                     }}>
                     <LogoImage source={LogoImg} />
@@ -72,7 +72,7 @@ const Container = styled.View`
     flex: 1;
     justify-content: center;
     align-items: center;
-    background-color: #ffbb4f;
+    background-color: #f2c098;
 `;
 
 const LogoImage = styled.Image`
@@ -90,7 +90,7 @@ const TextContainer = styled.View`
 const Title = styled.Text`
     font-weight: bold;
     color: rgba(255, 0, 0, 0.6);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); 
 `;
 
 const SubTitle = styled.Text`

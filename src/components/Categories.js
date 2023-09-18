@@ -3,8 +3,7 @@ import styled from "styled-components";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { CachedImage } from "../helpers/image";
 
-const Categories = ({categories, activeCategory, handleChangeCategory}) => {
-    // console.log('categories', categories)
+const Categories = ({categories, handleChangeCategory}) => {
     return (
         <Container>
             <ScrollBox horizontal
@@ -43,7 +42,7 @@ const CategoriesBox = styled.TouchableOpacity`
 `;
 
 const CategoriesImgBox = styled.View`
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(196, 54, 33, 0.2);
     border-radius: 999px;
     padding: 10px;
     margin-bottom: 5px;
@@ -51,7 +50,7 @@ const CategoriesImgBox = styled.View`
 
 const CategoriesName = styled.Text`
     font-size: ${hp(1.6)}px;
-    color: white;
+    color: #c43621;
 `;
 
 export default Categories;

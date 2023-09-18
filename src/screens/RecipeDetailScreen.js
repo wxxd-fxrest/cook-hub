@@ -9,6 +9,8 @@ import * as WebBrowser from "expo-web-browser";
 import { AntDesign } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; 
 
 const RecipeDetailScreen = ({ route: {params} }) => {
     const [isLiked, setIsLiked] = useState(false);
@@ -28,10 +30,8 @@ const RecipeDetailScreen = ({ route: {params} }) => {
 
     const loadLikeStatus = async () => {
         try {
-            // AsyncStorage에서 해당 게시글의 좋아요 상태를 불러옵니다.
             const likedStatus = await AsyncStorage.getItem(`likedStatus_${params.idMeal}`);
             if (likedStatus !== null) {
-              // 좋아요 상태가 저장되어 있으면 해당 상태를 설정합니다.
               setIsLiked(likedStatus === 'true');
             }
         } catch (error) {
@@ -41,14 +41,9 @@ const RecipeDetailScreen = ({ route: {params} }) => {
     
     const toggleLike = async () => {
         try {
-            // 현재 좋아요 상태를 반전시킵니다.
             const newLikeStatus = !isLiked;
             setIsLiked(newLikeStatus);
-        
-            // likedStatus 객체를 JSON 문자열로 변환하여 저장합니다.
             await AsyncStorage.setItem(`likedStatus_${params.idMeal}`, newLikeStatus.toString());
-            
-            // console.log(`Like status updated for post ${params.idMeal}:`, newLikeStatus);
         } catch (error) {
             console.error('Error toggling like status:', error);
         }
@@ -83,7 +78,6 @@ const RecipeDetailScreen = ({ route: {params} }) => {
         await WebBrowser.openBrowserAsync(WebURL)
     };
 
-    // console.log(params)
     return (
         <Container>
             {loading ? (
@@ -103,39 +97,42 @@ const RecipeDetailScreen = ({ route: {params} }) => {
                     </HeaderContainer>
                     <RecipeImage source={{ uri: meal.strMealThumb }} />
                     <DetailContainer>
-                        <Title>{meal.strMeal.length > 20 ? `${meal.strMeal.slice(0, 20)}...` : meal.strMeal}</Title>
-                        <MealArea>{meal.strArea}</MealArea>
+                        <TitleYoutube>
+                            <View style={{ flexDirection: 'column' }}>
+                                <Title>{meal.strMeal.length > 15 ? `${meal.strMeal.slice(0, 15)}...` : meal.strMeal}</Title>
+                                <MealArea>{meal.strArea}</MealArea>
+                            </View>
 
 
-                        {meal.strYoutube && (
-                            <RecipeVideoContainer>
-                                <YouTubeBtn onPress={goWebSite}>
-                                    <AntDesign name="youtube" size={24} color="red"/>
-                                    <Empty />
-                                    <RecipeVideoTitle>Recipe Video</RecipeVideoTitle>
-                                </YouTubeBtn>
-                            </RecipeVideoContainer>
-                        )}
+                            {meal.strYoutube && (
+                                <RecipeVideoContainer onPress={goWebSite}>
+                                    <AntDesign name="youtube" size={20} color="red"/>
+                                </RecipeVideoContainer>
+                            )}
+                        </TitleYoutube>
 
                         <IngredientsContainer>
                             <IngredientsHeader>
                                 <IngredientTitle>Ingredients</IngredientTitle>
                                 <MoreBtn onPress={toggleIngredients}>
-                                    {showIngredients ? <MaterialIcons name="keyboard-arrow-up" size={24} color="black" /> : <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />}
+                                    {showIngredients ? <MaterialIcons name="keyboard-arrow-up" size={26} color="#c84934" /> : <MaterialIcons name="keyboard-arrow-down" size={26} color="#c84934" />}
                                 </MoreBtn>
                             </IngredientsHeader>
                             {ingredientsIndexes(meal).map((i) => (
-                                showIngredients ? (
-                                <IngredientItem key={i}>
-                                    <IngredientBullet />
-                                    <IngredientText>{meal[`strMeasure${i}`]}</IngredientText>
-                                    <IngredientText>{meal[`strIngredient${i}`]}</IngredientText>
-                                </IngredientItem>
-                                ) : null
+                                    showIngredients ? (
+                                    <IngredientItem key={i}>
+                                        <IngredientBullet />
+                                        <IngredientText>{meal[`strMeasure${i}`]}</IngredientText>
+                                        <IngredientText>{meal[`strIngredient${i}`]}</IngredientText>
+                                    </IngredientItem>
+                                    ) : null
                             ))}
                         </IngredientsContainer>
 
-                        <StrInstructionsTitle> Instructions </StrInstructionsTitle>
+                        <StrInstructionsContainer>
+                            <Ionicons name="ios-document-text-outline" size={24} color="black" />
+                            <StrInstructionsTitle> Instructions </StrInstructionsTitle>
+                        </StrInstructionsContainer>
                         <StrInstructions>{meal.strInstructions}</StrInstructions>
                     </DetailContainer>
                 </ScrollBox>
@@ -146,7 +143,7 @@ const RecipeDetailScreen = ({ route: {params} }) => {
 
 const Container = styled.View`
     flex: 1;
-    background-color: #ffbb4f;
+    background-color: #f2c098;
 `;
 
 const ScrollBox = styled.ScrollView``;
@@ -169,6 +166,7 @@ const BackBtn = styled.TouchableOpacity`
     align-items: center;
     width: 40px;
     height: 40px;
+    box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
 `;
 
 const HeartBtn = styled.TouchableOpacity`
@@ -178,6 +176,7 @@ const HeartBtn = styled.TouchableOpacity`
     align-items: center;
     width: 40px;
     height: 40px;
+    box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
 `;
 
 const RecipeImage = styled.Image`
@@ -191,21 +190,30 @@ const DetailContainer = styled.View`
     padding: 20px ${hp(3)}px;
 `;
 
+const TitleYoutube = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+`;
+
 const Title = styled.Text`
-    color: rgba(255, 0, 0, 0.6);
+    color: #c43621;
     font-size: ${hp(3.5)}px;
     font-weight: bold;
 `;
 
 const MealArea = styled.Text`
-    font-size: ${hp(2)}px;
+    font-size: ${hp(1.5)}px;
     font-weight: medium;
-    color: #666;
+    color: #626160;
     margin-top: ${hp(0.4)}px;
 `;
 
 const IngredientsContainer = styled.View`
-  margin-top: ${wp(4)}px;
+    margin-top: ${wp(4)}px;
+    padding: 20px;
+    background-color: rgba(245, 244, 241, 0.3);
+    border-radius: 15px;
 `;
 
 const IngredientsHeader = styled.View`
@@ -216,52 +224,52 @@ const IngredientsHeader = styled.View`
 const MoreBtn = styled.TouchableOpacity``;
 
 const IngredientTitle = styled.Text`
-  font-size: ${hp(2.5)}px;
-  font-weight: bold;
-  color: #333;
+    font-size: ${hp(2.3)}px;
+    font-weight: bold;
+    color: #c84934;
 `;
 
 const IngredientItem = styled.View`
-  flex-direction: row;
-  align-items: center;
-  margin-top: ${hp(0.8)}px;
+    flex-direction: row;
+    align-items: center;
+    margin-top: ${hp(1)}px;
 `;
 
 const IngredientBullet = styled.View`
-  height: ${hp(1.2)}px;
-  width: ${hp(1.2)}px;
-  background-color: #fbbf24;
-  border-radius: ${hp(0.6)}px;
-  margin-right: ${wp(2)}px;
+    height: ${hp(0.8)}px;
+    width: ${hp(0.8)}px;
+    background-color: #626160;
+    border-radius: ${hp(0.6)}px;
+    margin-right: ${wp(2)}px;
 `;
 
 const IngredientText = styled.Text`
-  font-size: ${hp(2)}px;
-  font-weight: medium;
-  color: #666;
+    font-size: ${hp(1.7)}px;
+    font-weight: medium;
+    color: #626160;
+    margin-left: 5px;
 `;
 
-const RecipeVideoContainer = styled.View`
+const RecipeVideoContainer = styled.TouchableOpacity`
+    /* margin-top: ${wp(4)}px; */
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: ${wp(2.5)}px;
+    box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
+`;
+
+const StrInstructionsContainer = styled.View`
     margin-top: ${wp(4)}px;
-`;
-
-const RecipeVideoTitle = styled.Text`
-    font-size: ${hp(1.5)}px;
-    font-weight: bold;
-    color: #333;
-`;
-
-const Empty = styled.View`
-    width: 20px;
-`;
-
-const YouTubeBtn = styled.TouchableOpacity`
     flex-direction: row;
     align-items: center;
+    margin-bottom: 10px;
 `;
 
 const StrInstructionsTitle = styled.Text`
-    margin-top: ${wp(4)}px;
+    font-size: ${hp(1.8)}px;
 `;
 const StrInstructions = styled.Text``;
 
